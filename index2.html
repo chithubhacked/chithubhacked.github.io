@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Groq Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .chat-box {
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages {
+            height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .bot,
+        .user {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .bot {
+            background: #e0e0e0;
+            text-align: left;
+        }
+
+        .user {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chat-box">
+        <div class="messages" id="messages"></div>
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const API_KEY = "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"; // 👈 Apni real Groq API key yahan daalo
+
+        async function sendMessage() {
+            const inputField = document.getElementById("userInput");
+            const userMessage = inputField.value.trim();
+            if (userMessage === "") return;
+
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += `<div class="user">${userMessage}</div>`;
+
+            inputField.value = "";
+
+            // Show typing animation
+            const typingDiv = document.createElement("div");
+            typingDiv.classList.add("bot");
+            typingDiv.textContent = "Typing...";
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Send message to Groq API
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: "You are a hacking chatbot created by Abdallah.Give short answers" },
+                            { role: "user", content: userMessage }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+
+                // alert(JSON.stringify(data))
+                const botReply = data.choices?.[0]?.message?.content || "Sorry, no response.";
+
+                typingDiv.textContent = botReply;
+            } catch (error) {
+                alert("error connecting to groq")
+
+                typingDiv.textContent = "Error connecting to Groq API.";
+                console.error(error);
+            }
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+
+</body>
+
+</html>
