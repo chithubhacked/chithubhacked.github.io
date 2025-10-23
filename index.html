@@ -221,14 +221,10 @@
         }
 
         @keyframes typing {
-
-            0%,
-            60%,
-            100% {
+            0%, 60%, 100% {
                 transform: translateY(0);
                 opacity: 0.5;
             }
-
             30% {
                 transform: translateY(-10px);
                 opacity: 1;
@@ -297,23 +293,23 @@
         const MODEL = "llama-3.3-70b-versatile";
 
         // Initialize when page loads
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const userInput = document.getElementById("userInput");
             const sendBtn = document.getElementById("sendBtn");
-
+            
             if (!userInput) {
                 console.error("User input field not found!");
                 return;
             }
-
+            
             // Send message on Enter key press
-            userInput.addEventListener("keypress", function (event) {
+            userInput.addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                     sendMessage();
                 }
             });
-
+            
             // Send message on button click
             if (sendBtn) {
                 sendBtn.addEventListener("click", sendMessage);
@@ -328,7 +324,7 @@
         async function sendMessage() {
             const inputField = document.getElementById("userInput");
             const userMessage = inputField.value.trim();
-
+            
             // Validate input
             if (userMessage === "") {
                 return;
@@ -351,7 +347,7 @@
             typingDiv.classList.add("typing-animation");
             typingDiv.innerHTML = "<span></span><span></span><span></span>";
             messagesDiv.appendChild(typingDiv);
-
+            
             // Scroll to bottom
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
@@ -366,13 +362,13 @@
                     body: JSON.stringify({
                         model: MODEL,
                         messages: [
-                            {
-                                role: "system",
-                                content: "You are a helpful AI assistant created by Abdallah. Provide clear, concise, and helpful answers. Keep responses brief and to the point."
+                            { 
+                                role: "system", 
+                                content: "You are a helpful AI assistant created by Abdallah. Provide clear, concise, and helpful answers. Keep responses brief and to the point." 
                             },
-                            {
-                                role: "user",
-                                content: userMessage
+                            { 
+                                role: "user", 
+                                content: userMessage 
                             }
                         ],
                         max_tokens: 1024,
@@ -413,9 +409,9 @@
                 errorMessageDiv.classList.add("bot-message");
                 errorMessageDiv.style.color = "#ff6b6b";
                 errorMessageDiv.style.borderLeftColor = "#ff6b6b";
-
+                
                 let errorMsg = "Error: Failed to connect to Groq API.";
-
+                
                 if (error.message.includes("Failed to fetch")) {
                     errorMsg = "Error: Network error. Please check your internet connection and API key.";
                 } else if (error.message.includes("401")) {
@@ -425,7 +421,7 @@
                 } else if (error.message) {
                     errorMsg = `Error: ${error.message}`;
                 }
-
+                
                 errorMessageDiv.textContent = errorMsg;
                 messagesDiv.appendChild(errorMessageDiv);
 
